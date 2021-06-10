@@ -34,7 +34,7 @@ jobs:
           r-version: ${{ matrix.R }}
 
       - name: Install R deps
-        run: Rscript -e 'install.packages(c("R6", "rlang"))'
+        run: Rscript -e 'withCallingHandlers(install.packages(c("R6", "rlang")), warning = function(w) stop(w))'
 
       - name: Show package info
         run: Rscript -e 'print(installed.packages()[, c("Package", "Version", "LibPath")])'
@@ -42,5 +42,8 @@ jobs:
       - name: Show session info
         run: Rscript -e 'print(sessionInfo())'
 
-      - name: Install featuretable
-        run: wget https://github.com/mooreryan/featuretable/releases/download/v0.0.10/featuretable_0.0.10.tar.gz && Rscript -e 'install.packages("featuretable_0.0.10.tar.gz", repos = NULL)'
+      - name: Download featuretable release
+        run: wget https://github.com/mooreryan/featuretable/releases/download/v0.0.10/featuretable_0.0.10.tar.gz
+
+      - name: Install featuretable release
+        run : Rscript -e 'withCallingHandlers(install.packages("featuretable_0.0.10.tar.gz", repos = NULL), warning = function(w) stop(w))'
