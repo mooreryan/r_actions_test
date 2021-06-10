@@ -1,0 +1,45 @@
+name: Build macos
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-latest
+        R:
+          - 3.3
+          - 3.4
+          - 3.5
+          - 3.6
+          - 4.0
+          - 4.1
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: ${{ matrix.R }}
+
+      - name: Install R deps
+        run: Rscript -e 'withCallingHandlers(install.packages(c("R6", "rlang")), warning = function(w) stop(w))'
+
+      - name: Show package info
+        run: Rscript -e 'print(installed.packages()[, c("Package", "Version", "LibPath")])'
+
+      - name: Show session info
+        run: Rscript -e 'print(sessionInfo())'
+
+      - name: Download featuretable release
+        run: wget https://github.com/mooreryan/featuretable/releases/download/v0.0.10/featuretable_0.0.10.tar.gz
+
+      - name: Install featuretable release
+        run : Rscript -e 'withCallingHandlers(install.packages("featuretable_0.0.10.tar.gz", repos = NULL), warning = function(w) stop(w))'
