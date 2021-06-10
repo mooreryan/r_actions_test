@@ -16,6 +16,9 @@ jobs:
           - macos-latest
           - ubuntu-latest
         R:
+          - 2.5.0
+          - 3.0.0
+          - 3.5.0
           - 3.6.3
           - 4.1.0
     runs-on: ${{ matrix.os }}
@@ -27,6 +30,12 @@ jobs:
 
       - name: Install R deps
         run: Rscript -e 'install.packages(c("R6", "rlang"))'
+
+      - name: Show package info
+        run: Rscript -e 'print(installed.packages()[, c("Package", "Version", "LibPath")])'
+
+      - name: Show session info
+        run: Rscript -e 'print(sessionInfo())'
 
       - name: Install featuretable
         run: wget https://github.com/mooreryan/featuretable/releases/download/v0.0.10/featuretable_0.0.10.tar.gz && Rscript -e 'install.packages("featuretable_0.0.10.tar.gz", repos = NULL)'
